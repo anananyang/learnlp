@@ -27,5 +27,36 @@ class FullySegment(Segment):
 
 
 '''正向最长匹配'''
+class HmmSegment(Segment):
+
+    def cut(self, str):
+        if str is None or len(str) == 0:
+            return None
+        words = []
+        strlen = len(str) 
+        base = 0
+        while base < strlen:
+            j = base
+            mm_word = None
+            for j in (range(strlen + 1)):
+                word = str[base:j]
+                if dictionary.exist(word):
+                    if mm_word is None or len(mm_word) < len(word):
+                        mm_word = word
+            if mm_word is not None:
+                words.append(mm_word)
+                base = base + len(mm_word)
+            else:
+                base = base + 1      
+        return words
+
+'''逆向最长匹配'''
+class BmmSegment(Segment):
+    def cut(self, str):
+        pass
 
 
+'''双向最长匹配'''
+class TwoWaymmSegment(Segment):
+    def cut(self, str):
+        pass
