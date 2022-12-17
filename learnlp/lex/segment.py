@@ -36,13 +36,14 @@ class HmmSegment(Segment):
         strlen = len(str) 
         base = 0
         while base < strlen:
-            j = base
+            j = base + 1
             mm_word = None
-            for j in (range(strlen + 1)):
+            while j <= strlen:
                 word = str[base:j]
                 if dictionary.exist(word):
                     if mm_word is None or len(mm_word) < len(word):
                         mm_word = word
+                j = j + 1
             if mm_word is not None:
                 words.append(mm_word)
                 base = base + len(mm_word)
@@ -53,10 +54,78 @@ class HmmSegment(Segment):
 '''逆向最长匹配'''
 class BmmSegment(Segment):
     def cut(self, str):
-        pass
+        if str is None or len(str) == 0:
+            return None
+        words = []
+        base = len(str)
+        while base > 0:
+            j =  base - 1
+            mm_word = None
+            while j >= 0:
+                word = str[j:base]
+                if dictionary.exist(word):
+                    if mm_word is None or len(mm_word) < len(word):
+                        mm_word = word
+                j = j - 1
+                
+            if mm_word is not None:
+                base = base - len(mm_word)
+                words.insert(0, mm_word)
+            else:
+                base = base - 1
+        return words
 
+        
 
 '''双向最长匹配'''
 class TwoWaymmSegment(Segment):
+    def __init__(self):
+        self.hmmSegment = HmmSegment()
+        self.bmmSegment = BmmSegment()
+
     def cut(self, str):
-        pass
+        if str is None or len(str) == 0:
+            return None
+        hmm_words = self.hmmSegment.cut(str)
+        bmm_words = self.bmmSegment.cut(str)
+        '''返回单词数量最少的结果'''
+        words = self.__get_min_len_words(hmm_words, bmm_words)
+        if words is not None:
+            return words
+        '''如果单词数量相等，则返回只有一个字的单词数量最少的结果'''
+        words = self.__get_min_single_words(hmm_words, bmm_words)
+        if words is not None:
+            return words
+        ''''如果以上都一样，则返回逆向最长匹配的结果'''
+        return bmm_words
+
+    def  __get_min_len_words(self, hmm_words, bmm_words):
+        hmm_words_len = len(hmm_words)
+        bmm_words_len = len(bmm_words)
+        if hmm_words_len < bmm_words_len:
+            return hmm_words
+        elif  hmm_words_len > bmm_words_len:
+            return bmm_words
+        else:
+            return None
+
+    def __get_min_single_words(self, hmm_words, bmm_words):
+        hmm_single_world_len = self.__count_single_word(hmm_words)
+        bmm_single_world_len = self.__count_single_word(bmm_words)
+        if hmm_single_world_len < bmm_single_world_len:
+            return hmm_words
+        elif  hmm_single_world_len > bmm_single_world_len:
+            return bmm_words
+        else:
+            return None
+
+    def __count_single_word(self, words):
+        if words is None :
+            return 0
+        count = 0
+        for word in words:
+            if len(word) == 1:
+                count = count + 1
+        return count;
+
+
