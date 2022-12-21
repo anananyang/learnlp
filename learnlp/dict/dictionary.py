@@ -50,7 +50,7 @@ class Item:
 
 class DictionaryLoader:
 
-    DICT_TXT_BIG = '/home/anyang/project/learnlp/data/dict.txt.big'
+    DICT_TXT_BIG = '/Users/t/myProject/learnlp/data/dict.txt.big'
 
     @staticmethod
     def load():

@@ -2,41 +2,37 @@ from lex.segment import FullySegment
 from lex.segment import HmmSegment
 from lex.segment import BmmSegment
 from lex.segment import TwoWaymmSegment
+from accuracy.accurate import Accurator
 
 strs = ['我想搭个顺风车', '研究生命起源', '项目的研究']
+golds = [
+    ['我', '想', '搭', '个', '顺风车'],
+    ['研究', '生命', '起源'],
+    ['项目', '的', '研究']
+]
+
+def segment(segment):
+    if segment is None:
+        return
+    print(f'----------------------- {segment.desc()} ------------------------')
+    accurator = Accurator()
+    for str, gold in zip(strs, golds):
+        pred = segment.cut(str)
+        p, r, f = accurator.accurate(gold, pred)
+        print(f'{str} 结果：{pred}。准确率: p = {p}, 召回率 r={r}, f={f}')
+    print('\n')
 
 def fully_segment():
-    print('----------------------- 完全切分 ------------------------')
-    segment = FullySegment()
-    for str in strs:
-        words = segment.cut(str)
-        print(f'{str} 结果：{words}')
-    print('\n')
+   segment(FullySegment())
 
 def hmm_segment():
-    print('----------------------- 正向最长匹配 ------------------------')
-    segment = HmmSegment()
-    for str in strs:
-        words = segment.cut(str)
-        print(f'{str} 结果：{words}')
-    print('\n')
+    segment(HmmSegment())
     
 def bmm_segment():
-    print('----------------------- 逆向最长匹配 ------------------------')
-    segment = BmmSegment()
-    for str in strs:
-        words = segment.cut(str)
-        print(f'{str} 结果：{words}')
-    print('\n')
+    segment(BmmSegment())
 
 def two_way_mm_segment():
-    print('----------------------- 双向最长匹配 ------------------------')
-    segment = TwoWaymmSegment()
-    for str in strs:
-        words = segment.cut(str)
-        print(f'{str} 结果：{words}')
-    print('\n')
-
+    segment(TwoWaymmSegment())
 
 def main():
    fully_segment()

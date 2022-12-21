@@ -7,6 +7,11 @@ class Segment(metaclass=ABCMeta):
     def cut(self, str):
         pass
 
+    @abstractmethod
+    def desc(self):
+        pass
+
+
 
 '''完全切分算法'''
 class FullySegment(Segment):
@@ -25,6 +30,11 @@ class FullySegment(Segment):
 
         return words
 
+    def desc(self):
+        return '完全切分算法'
+    
+    
+
 
 '''正向最长匹配'''
 class HmmSegment(Segment):
@@ -41,8 +51,7 @@ class HmmSegment(Segment):
             while j <= strlen:
                 word = str[base:j]
                 if dictionary.exist(word):
-                    if mm_word is None or len(mm_word) < len(word):
-                        mm_word = word
+                    mm_word = word
                 j = j + 1
             if mm_word is not None:
                 words.append(mm_word)
@@ -50,6 +59,10 @@ class HmmSegment(Segment):
             else:
                 base = base + 1      
         return words
+
+
+    def desc(self):
+        return '正向最长匹配'
 
 '''逆向最长匹配'''
 class BmmSegment(Segment):
@@ -64,8 +77,7 @@ class BmmSegment(Segment):
             while j >= 0:
                 word = str[j:base]
                 if dictionary.exist(word):
-                    if mm_word is None or len(mm_word) < len(word):
-                        mm_word = word
+                    mm_word = word
                 j = j - 1
                 
             if mm_word is not None:
@@ -74,6 +86,10 @@ class BmmSegment(Segment):
             else:
                 base = base - 1
         return words
+
+    
+    def desc(self):
+        return '逆向最长匹配'
 
         
 
@@ -127,5 +143,8 @@ class TwoWaymmSegment(Segment):
             if len(word) == 1:
                 count = count + 1
         return count;
+
+    def desc(self):
+        return '双向最长匹配'
 
 
